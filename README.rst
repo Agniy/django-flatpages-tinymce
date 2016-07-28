@@ -106,7 +106,7 @@ override them in site-wide settings.py file. The main of them are:
 
   * FLATPAGES_TINYMCE_ADMIN (default True) - use TinyMCE widget in admin area
   * FLATPAGES_TINYMCE_FRONTEND (default True) - use TinyMCE widget in frontend
-  * FLATPAGES_TEMPLATE_DIR (default: TEMPLATE_DIRS[0] + 'flatpages') - directory where
+  * FLATPAGES_TEMPLATE_DIR (default: TEMPLATES[0]['DIRS'][0] + 'flatpages') - directory where
     flatpages templates are placed
   * FLATPAGES USE_MINIFIED (defalut: not settings.DEBUG) - use minified versions of JS/CSS
 
