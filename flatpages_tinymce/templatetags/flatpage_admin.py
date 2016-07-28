@@ -6,6 +6,7 @@ from django.conf import settings
 import tinymce.settings
 from flatpages_tinymce import settings as local_settings
 
+# includes
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
@@ -13,12 +14,14 @@ from django.utils.translation import ugettext as _
 
 register = template.Library()
 
-def is_admin(context):
-    return 'user' in context and context['user'].has_perm('flatpages.change_flatpage') and local_settings.USE_FRONTED_TINYMCE
 
 @register.simple_tag(takes_context=True)
 def flatpage_media(context):
-    if not is_admin(context):
+    is_admin = ('user' in context
+                and context['user'].is_superuser
+                and local_settings.USE_FRONTED_TINYMCE)
+
+    if not is_admin:
         return ""
 
     if context.render_context.get("flatpage_media_loaded", None):
@@ -69,12 +72,13 @@ def flatpage_media(context):
 
 @register.inclusion_tag("flatpages_tinymce/_contentedit.htm", takes_context=True)
 def flatpage_admin(context, flatpage):
+    is_admin = 'user' in context and context['user'].is_superuser and local_settings.USE_FRONTED_TINYMCE
     media = flatpage_media(context)
     output_content = mark_safe(flatpage.content)
     return {
         'media': media,
         'page_id': flatpage.id,
-        'admin': is_admin(context),
+        'admin': is_admin,
         'prefix': local_settings.DIV_PREFIX,
         'content': output_content,
         }
